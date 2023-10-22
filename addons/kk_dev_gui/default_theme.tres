@@ -1,0 +1,12 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://8hhhcfdedkr5"]
+
+[ext_resource type="FontFile" uid="uid://de60q4v62nknw" path="res://addons/kk_dev_gui/clacon2.woff2" id="1_r7j05"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_07rav"]
+bg_color = Color(0, 0, 1, 1)
+
+[resource]
+default_font = ExtResource("1_r7j05")
+default_font_size = 32
+Label/colors/font_color = Color(1, 1, 0, 1)
+Label/styles/normal = SubResource("StyleBoxFlat_07rav")
