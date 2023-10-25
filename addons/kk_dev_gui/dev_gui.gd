@@ -1,25 +1,32 @@
 extends VBoxContainer
 class_name DevGUI
 
-var _controls: Dictionary = {}
+var _labels: Dictionary = {}
+var _labels_reuse: Dictionary = {}
+var _labels_next_seq_id: int = 0
 
 static var _instance: DevGUI
 
 static func label(text: String) -> void:
 	if (_instance == null):
 		return
-	var l = _instance._get_or_create_control(text, Label.new) as Label
+	var id = str(_instance._labels_next_seq_id)
+	_instance._labels_next_seq_id = _instance._labels_next_seq_id + 1
+	var l = _instance._get_or_create_label(id)
 	l.text = text
-	
-func _get_or_create_control(id: String, ctor: Callable) -> Control:
-	var c = _controls.get(id) as Control
-	if (c == null):
-		c = ctor.call() as Control
-		c.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		_controls[id] = c
-		add_child(c)
-		print("Created control ", c, "added at path ", get_path_to(c))
-	return c
+
+func _get_or_create_label(id: String) -> Label:
+	var l = _labels_reuse.get(id) as Label
+	if (l == null):
+		l = Label.new()
+		l.name = id
+		l.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		add_child(l)
+		print("Created label ", l, " with id ", id, " added at path ", get_path_to(l))
+	else:
+		_labels_reuse.erase(id)
+	_labels[id] = l
+	return l
 	
 
 # Called when the node enters the scene tree for the first time.
@@ -31,6 +38,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	for c in _controls.values():
-		c.queue_free()
-	_controls.clear()
+	for l in _labels_reuse.values():
+		l.queue_free()
+	var ll = _labels_reuse
+	_labels_reuse = _labels
+	_labels = ll
+	_labels.clear()
+	_labels_next_seq_id = 0
