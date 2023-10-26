@@ -7,7 +7,7 @@
 
 [sub_resource type="Environment" id="Environment_ong64"]
 background_mode = 1
-background_color = Color(0.243137, 0.239216, 0.239216, 1)
+background_color = Color(0.239216, 0.25098, 0.329412, 1)
 
 [node name="test_tscn" type="Node3D"]
 
