@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=14 format=3 uid="uid://8hhhcfdedkr5"]
+[gd_resource type="Theme" load_steps=15 format=3 uid="uid://8hhhcfdedkr5"]
 
 [ext_resource type="FontFile" uid="uid://de60q4v62nknw" path="res://addons/kk_dev_gui/clacon2.woff2" id="1_r7j05"]
 
@@ -48,6 +48,13 @@ bg_color = Color(0.184314, 0.407843, 0.568627, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xhc3k"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gi6ey"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.121569, 0.121569, 0.156863, 0.8)
+
 [resource]
 default_font = ExtResource("1_r7j05")
 default_font_size = 32
@@ -66,3 +73,4 @@ CheckButton/styles/hover = SubResource("StyleBoxEmpty_6m185")
 CheckButton/styles/normal = SubResource("StyleBoxEmpty_3303o")
 CheckButton/styles/pressed = SubResource("StyleBoxEmpty_xhc3k")
 Label/colors/font_color = Color(0.862745, 0.843137, 0.729412, 1)
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_gi6ey")

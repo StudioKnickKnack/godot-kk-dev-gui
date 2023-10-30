@@ -13,11 +13,14 @@ func _process(delta):
 	if (_reverse_direction):
 		rotation = rotation * -1
 	rotate_y(rotation)
+
+	if (DevGUI.begin_window()):
+		var deg_y:float = self.rotation_degrees.y
+		DevGUI.label(str("y: ", deg_y))
+		if (deg_y < 0):
+			DevGUI.label(str("The value (", deg_y, ") is negative"))
 	
-	var deg_y:float = self.rotation_degrees.y
-	DevGUI.label(str("y: ", deg_y))
-	if (deg_y < 0):
-		DevGUI.label(str("The value (", deg_y, ") is negative"))
-	
-	if (DevGUI.button("Switch direction")):
-		_reverse_direction = !_reverse_direction
+		if (DevGUI.button("Switch direction")):
+			_reverse_direction = !_reverse_direction
+
+		DevGUI.end_window()
