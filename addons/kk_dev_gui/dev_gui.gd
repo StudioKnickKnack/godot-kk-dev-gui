@@ -13,6 +13,10 @@ var _buttons_clicked: Dictionary = {}
 var _buttons_clicked_prev: Dictionary = {}
 var _buttons_next_seq_id: int = 0
 
+var _spacings: Dictionary = {}
+var _spacings_reuse: Dictionary = {}
+var _spacings_next_seq_id: int = 0
+
 var _windows: Dictionary = {}
 var _windows_reuse: Dictionary = {}
 var _windows_next_seq_id: int = 0
@@ -36,6 +40,13 @@ static func button(text: String) -> bool:
 	var b = _instance._get_or_create_button(id)
 	b.text = text
 	return _instance._buttons_clicked_prev.has(id)
+
+static func spacing() -> void:
+	if (_instance == null):
+		return
+	var id = str("spacing_", _instance._spacings_next_seq_id)
+	_instance._spacings_next_seq_id = _instance._spacings_next_seq_id + 1
+	var s = _instance._get_or_create_spacing(id)
 
 static func begin_window() -> bool:
 	if (_instance == null):
@@ -79,6 +90,19 @@ func _get_or_create_button(id: String) -> Button:
 		_buttons_reuse.erase(id)
 	_buttons[id] = b
 	return b
+
+func _get_or_create_spacing(id: String) -> Container:
+	var s = _spacings_reuse.get(id)
+	if (s == null):
+		s = Container.new()
+		s.name = id
+		s.custom_minimum_size = Vector2(16, 16)
+		_parent_stack.front().add_child(s)
+		print("Created spacing ", s, " with id ", id, " added at path ", get_path_to(s))
+	else:
+		_spacings_reuse.erase(id)
+	_spacings[id] = s
+	return s
 
 func _get_or_create_window(id: String) -> Container:
 	var w = _windows_reuse.get(id)
@@ -126,6 +150,14 @@ func _process(delta):
 	_buttons_clicked_prev = _buttons_clicked
 	_buttons_clicked = bc
 	_buttons_clicked.clear()
+
+	for s in _spacings_reuse.values():
+		s.queue_free()
+	var ss = _spacings_reuse
+	_spacings_reuse = _spacings
+	_spacings = ss
+	_spacings.clear()
+	_spacings_next_seq_id = 0
 
 	for w in _windows_reuse.values():
 		w.queue_free()
