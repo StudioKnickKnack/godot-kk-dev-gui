@@ -1,13 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://b3g0w43wat2lg"]
+[gd_scene load_steps=4 format=3 uid="uid://b3g0w43wat2lg"]
 
 [ext_resource type="Theme" uid="uid://8hhhcfdedkr5" path="res://addons/kk_dev_gui/default_theme.tres" id="1_extxf"]
 [ext_resource type="Script" path="res://addons/kk_dev_gui/dev_gui.gd" id="1_vaay1"]
 
-[node name="Dev GUI" type="VBoxContainer"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3wxyt"]
+
+[node name="Dev GUI" type="PanelContainer" node_paths=PackedStringArray("window_parent", "root")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_extxf")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_3wxyt")
 script = ExtResource("1_vaay1")
+window_parent = NodePath(".")
+root = NodePath("root")
+
+[node name="root" type="VBoxContainer" parent="."]
+layout_mode = 2

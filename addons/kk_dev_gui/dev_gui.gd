@@ -1,7 +1,7 @@
-extends VBoxContainer
+extends Control
 class_name DevGUI
 
-var _parent_stack: Array[Control] = [self]
+@onready var _parent_stack: Array[Control] = [root]
 
 var _labels: Dictionary = {}
 var _labels_reuse: Dictionary = {}
@@ -21,6 +21,8 @@ var _windows: Dictionary = {}
 var _windows_reuse: Dictionary = {}
 var _windows_next_seq_id: int = 0
 
+@export var window_parent: Node
+@export var root: Control
 
 static var _instance: DevGUI
 
@@ -66,19 +68,24 @@ static func end_window() -> void:
 
 func _get_or_create_label(id: String) -> Label:
 	var l = _labels_reuse.get(id)
+	var p = _parent_stack.front()
 	if (l == null):
 		l = Label.new()
 		l.name = id
 		l.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		_parent_stack.front().add_child(l)
+		p.add_child(l)
 		print("Created label ", l, " with id ", id, " added at path ", get_path_to(l))
 	else:
 		_labels_reuse.erase(id)
+		if l.get_parent() != p:
+			l.get_parent().remove_child(l)
+			p.add_child(l)
 	_labels[id] = l
 	return l
 
 func _get_or_create_button(id: String) -> Button:
 	var b = _buttons_reuse.get(id)
+	var p = _parent_stack.front()
 	if (b == null):
 		b = Button.new()
 		b.name = id
@@ -88,11 +95,15 @@ func _get_or_create_button(id: String) -> Button:
 		print("Created button ", b, " with id ", id, " added at path ", get_path_to(b))
 	else:
 		_buttons_reuse.erase(id)
+		if b.get_parent() != p:
+			b.get_parent().remove_child(b)
+			p.add_child(b)
 	_buttons[id] = b
 	return b
 
 func _get_or_create_spacing(id: String) -> Container:
 	var s = _spacings_reuse.get(id)
+	var p = _parent_stack.front()
 	if (s == null):
 		s = Container.new()
 		s.name = id
@@ -101,6 +112,9 @@ func _get_or_create_spacing(id: String) -> Container:
 		print("Created spacing ", s, " with id ", id, " added at path ", get_path_to(s))
 	else:
 		_spacings_reuse.erase(id)
+		if s.get_parent() != p:
+			s.get_parent().remove_child(s)
+			p.add_child(s)
 	_spacings[id] = s
 	return s
 
@@ -111,10 +125,13 @@ func _get_or_create_window(id: String) -> Container:
 		var c = VBoxContainer.new()
 		w.add_child(c)
 		w.name = id
-		_parent_stack.front().add_child(w)
+		window_parent.add_child(w)
 		print("Created window ", w, " with id ", id, " added at path ", get_path_to(w))
 	else:
 		_windows_reuse.erase(id)
+		if w.get_parent() != window_parent:
+			w.get_parent().remove_child(w)
+			window_parent.add_child(w)
 	_windows[id] = w
 	return w.get_child(0)
 
@@ -125,11 +142,10 @@ func _ready():
 		return
 	_instance = self
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	_parent_stack.clear()
-	_parent_stack.push_front(self)
+	_parent_stack.push_front(root)
 
 	for l in _labels_reuse.values():
 		l.queue_free()
